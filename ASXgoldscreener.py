@@ -104,7 +104,7 @@ results_df = calculation_metrics(df)
 
 
 ##grade and jurisdiction adjustments
-
+## This is very unclear code that should be optimised
 def get_grade_adjustment(grade_gt):
     for band in GRADE_ADJUSTMENTS:
         if grade_gt <= band["max_gt"]:
