@@ -140,6 +140,7 @@ def analyse():
 
     # ── Print summary ─────────────────────────────────────────────────
     print(f"\n  AUD/USD rate    : {audusd_now:.4f}")
+    print(f"\n Lookback Period : {WINDOW_DAYS:.4f}")
     print(f"\n  Current price   : A${latest_price:,.2f}")
     print(f"  USD equivalent  : US${window_usd.iloc[-1]:,.2f}")
     print(f"  Trend (fitted)  : A${latest_fitted:,.2f}")
