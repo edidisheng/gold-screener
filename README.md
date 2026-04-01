@@ -1,5 +1,10 @@
-Hello!
-The intention is to create a model based around the following trading strategy:
-- A calculation of Enterprise Value through data found on Yahoo Finance and company quarterly reports
-- A calculation of Enterprise Value per Oz of gold produced
-- Model updates when new gold is announced.
+Hello! There are two graphs, **Goldlong** which is a polynomial squared regression over a year of gold prices. **Goldshort** is the same except done on a 90 day timeframe.
+
+The purpose of the 1 year regression is to analyse the structural trend of gold and whether to be in it at all. The biggest deviation week section is meant to be a reference for the user to search up what happened geopolitically in the news that week to see what caused the deviation. The 90 day graph is simply to determine the best time of entry when buying gold stocks on the ASX.
+            
+The **evscreener** is to identify discounted EV/oz gold producers but currently is innacurate due to the dataset being extremely limited and under construction. The planned strategy is to build a portfolio of every single discounted gold producer in the market, purchase them at the right time, and hold for a few months under the assumption that on average discounted gold stocks have higher returns than those that arent. This stems from two smaller assumptions, that a gold price rally will have a higher effect on discounted stocks and that these discounted stocks are possibly mispriced (undervalued)
+            
+Note that although the original model code for graphs and ev screening was is being done mainly manually, this streamlit port is assisted heavily by AI and made mainly for accessibility reasons. 
+
+Thanks! Edison Duong
+
