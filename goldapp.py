@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(layout="wide", page_title="Gold Investment Framework")
 
-st.title("Gold Analysis Tool")
+st.title("Gold Investment Framework")
 st.caption("A technical and trend-based framework for timing gold stock entries")
 
 st.divider()
