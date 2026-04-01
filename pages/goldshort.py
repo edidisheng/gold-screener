@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide", page_title="Gold Trend Model 90 Days")
-st.title("Gold Trend Model (AUD)")
+st.title("Gold Trend Model 90 Days (AUD)")
 st.caption("Polynomial trend regression on gold price vs AUD")
 
 @st.cache_data(ttl=3600)
