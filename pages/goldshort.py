@@ -11,8 +11,13 @@ st.caption("Polynomial trend regression on gold price vs AUD")
 
 @st.cache_data(ttl=3600)
 def load_data():
-    gold   = yf.download('GC=F', start='2025-10-01', auto_adjust=True)['Close'].squeeze()
-    audusd = yf.download('AUDUSD=X', start='2025-10-01', auto_adjust=True)['Close'].squeeze()
+    gold   = yf.download('GC=F', start='2025-01-01', auto_adjust=True)['Close'].squeeze()
+    audusd = yf.download('AUDUSD=X', start='2025-01-01', auto_adjust=True)['Close'].squeeze()
+    
+    # normalize both indexes to date only, no timezone
+    gold.index   = pd.to_datetime(gold.index).normalize()
+    audusd.index = pd.to_datetime(audusd.index).normalize()
+    
     df = pd.DataFrame({'gp': gold, 'audusd': audusd})
     df['gp_aud'] = df['gp'] / df['audusd']
     df = df.dropna()
