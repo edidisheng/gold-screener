@@ -32,4 +32,4 @@ st.warning("If the models disagree, exercise caution and wait for confirmation")
 
 st.divider()
 
-st.caption("Built with yfinance, statsmodels, plotly and streamlit. Last updated 1st April 2026")
+st.caption("Built with yfinance, statsmodels, plotly and streamlit. Last updated 3rd April 2026")
