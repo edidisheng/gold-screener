@@ -1,37 +1,14 @@
 import streamlit as st
-import pandas as pd
-import statsmodels.api as sm
-import yfinance as yf
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from utils import load_gold, fit_trend
 
 st.set_page_config(layout="wide", page_title="Gold Trend Model 90 Days")
 st.title("Gold Trend Model 90 Days (AUD)")
 st.caption("Polynomial trend regression on gold price vs AUD")
 
-@st.cache_data(ttl=3600)
-def load_data():
-    gold   = yf.download('GC=F', start='2025-01-01', auto_adjust=True)['Close'].squeeze()
-    audusd = yf.download('AUDUSD=X', start='2025-01-01', auto_adjust=True)['Close'].squeeze()
-    
-    # normalize both indexes to date only, no timezone
-    gold.index   = pd.to_datetime(gold.index).normalize()
-    audusd.index = pd.to_datetime(audusd.index).normalize()
-    
-    df = pd.DataFrame({'gp': gold, 'audusd': audusd})
-    df['gp_aud'] = df['gp'] / df['audusd']
-    df = df.dropna()
-    df['t']  = range(len(df))
-    df['t2'] = df['t'] ** 2
-    return df
-
-df = load_data()
-
-X = sm.add_constant(df[['t', 't2']])
-y = df['gp_aud']
-model = sm.OLS(y, X).fit()
-df['trend']     = model.fittedvalues
-df['deviation'] = df['gp_aud'] - df['trend']
+df = load_gold('2025-10-01')
+df = fit_trend(df)
 
 current   = df['gp_aud'].iloc[-1]
 trend_val = df['trend'].iloc[-1]
@@ -53,52 +30,24 @@ fig = make_subplots(rows=2, cols=1, shared_xaxes=False,
                     vertical_spacing=0.08,
                     subplot_titles=("Gold Price vs Trend (AUD)", "Deviation from Trend (AUD)"))
 
-# main price chart — matching the gold colour and style from the other model
-fig.add_trace(go.Scatter(
-    x=df.index, y=df['gp_aud'],
-    name='Daily Close (AUD)',
-    line=dict(color='#d4a017', width=1.5),
-    opacity=0.85
-), row=1, col=1)
-
-fig.add_trace(go.Scatter(
-    x=df.index, y=df['trend'],
-    name='Poly Trend',
-    line=dict(color='#cccccc', dash='dash', width=2)
-), row=1, col=1)
-
-# horizontal line at latest trend value — matching ax1.axhline
+fig.add_trace(go.Scatter(x=df.index, y=df['gp_aud'], name='Daily Close (AUD)',
+                          line=dict(color='#d4a017', width=1.5), opacity=0.85), row=1, col=1)
+fig.add_trace(go.Scatter(x=df.index, y=df['trend'], name='Poly Trend',
+                          line=dict(color='#cccccc', dash='dash', width=2)), row=1, col=1)
 fig.add_hline(y=trend_val, line=dict(color='gray', width=0.7, dash='dot'), row=1, col=1)
-
-# residual bar chart — matching the red/green colours from the other model
-fig.add_trace(go.Bar(
-    x=df.index, y=df['deviation'],
-    name='Deviation',
-    showlegend=False,
-    marker_color=['#27ae60' if x > 0 else '#c0392b' for x in df['deviation']],
-    opacity=0.7
-), row=2, col=1)
-
-# zero line on residual chart — matching ax2.axhline(0)
+fig.add_trace(go.Bar(x=df.index, y=df['deviation'], name='Deviation', showlegend=False,
+                      marker_color=['#27ae60' if x > 0 else '#c0392b' for x in df['deviation']],
+                      opacity=0.7), row=2, col=1)
 fig.add_hline(y=0, line=dict(color='white', width=0.8), row=2, col=1)
 
-fig.update_layout(
-    height=800,
-    template='plotly_dark',
-    showlegend=True,
-    paper_bgcolor='#111111',
-    plot_bgcolor='#111111',
-    font=dict(color='white', size=13),
-    margin=dict(l=60, r=40, t=60, b=40),
-    legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
-)
-
-# gridlines matching ax1.grid(True, alpha=0.3)
+fig.update_layout(height=800, template='plotly_dark', showlegend=True,
+                  paper_bgcolor='#111111', plot_bgcolor='#111111',
+                  font=dict(color='white', size=13),
+                  margin=dict(l=60, r=40, t=60, b=40),
+                  legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1))
 fig.update_xaxes(showgrid=True, gridcolor='rgba(255,255,255,0.15)', tickformat="%b '%y")
 fig.update_yaxes(showgrid=True, gridcolor='rgba(255,255,255,0.15)')
-
 fig.update_yaxes(title_text="Price (AUD)", row=1, col=1)
 fig.update_yaxes(title_text="Deviation (AUD)", row=2, col=1)
 
 st.plotly_chart(fig, use_container_width=True)
-
