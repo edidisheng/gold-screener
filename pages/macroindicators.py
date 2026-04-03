@@ -15,9 +15,8 @@ def load_data():
     infl  = fred.get_series('T5YIE',  observation_start='2003-01-01')
     dxy   = yf.download('DX-Y.NYB', start='2003-01-01', auto_adjust=True)['Close'].squeeze()
     dxy.index = pd.to_datetime(dxy.index).normalize()
+    dxy = dxy.dropna()
     return tips, infl, dxy
-
-tips, infl, dxy = load_data()
 
 # ── Helper ────────────────────────────────────────────────────────────────
 def zscore(series):
@@ -41,7 +40,7 @@ def signal_label(z, bullish_high):
 # ── Calculate ─────────────────────────────────────────────────────────────
 tips_z = zscore(tips).iloc[-1]
 infl_z = zscore(infl).iloc[-1]
-dxy_z  = zscore(pd.Series(dxy)).iloc[-1]
+dxy_z = zscore(dxy).iloc[-1]
 
 # ── Display ───────────────────────────────────────────────────────────────
 st.divider()
