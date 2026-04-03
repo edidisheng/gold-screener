@@ -5,7 +5,7 @@ import zipfile
 import io
 
 st.set_page_config(layout="wide", page_title="COT Positioning")
-st.title("COT Gold Positioning")
+st.title("COT Gold Futures")
 st.caption("CFTC Commitments of Traders — Managed Money net positions in gold futures")
 
 # ── Load data ─────────────────────────────────────────────────────────────
