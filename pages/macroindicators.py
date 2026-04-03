@@ -22,20 +22,28 @@ def load_data():
 def zscore(series):
     return (series - series.mean()) / series.std()
 
-def signal_label(z, bullish_high):
-    """bullish_high=True means high z is bullish (inflation), False means bearish (yield, DXY)"""
+def signal_box(z, bullish_high):
     if bullish_high:
-        if z >= 2:   return "Strong tailwind — very bullish for gold 🟢"
-        elif z >= 1: return "Mild tailwind — bullish for gold 🟡"
-        elif z <= -2: return "Strong headwind — very bearish for gold 🔴"
-        elif z <= -1: return "Mild headwind — bearish for gold 🟠"
-        else:        return "Neutral zone ⚪"
+        if z >= 2:    color, text = "#1a472a", "Strong tailwind — very bullish for gold"
+        elif z >= 1:  color, text = "#2d6a4f", "Mild tailwind — bullish for gold"
+        elif z <= -2: color, text = "#7b1d1d", "Strong headwind — very bearish for gold"
+        elif z <= -1: color, text = "#9b2226", "Mild headwind — bearish for gold"
+        else:         color, text = "#2c2c2c", "Neutral zone"
     else:
-        if z >= 2:   return "Strong headwind — very bearish for gold 🔴"
-        elif z >= 1: return "Mild headwind — bearish for gold 🟠"
-        elif z <= -2: return "Strong tailwind — very bullish for gold 🟢"
-        elif z <= -1: return "Mild tailwind — bullish for gold 🟡"
-        else:        return "Neutral zone ⚪"
+        if z >= 2:    color, text = "#7b1d1d", "Strong headwind — very bearish for gold"
+        elif z >= 1:  color, text = "#9b2226", "Mild headwind — bearish for gold"
+        elif z <= -2: color, text = "#1a472a", "Strong tailwind — very bullish for gold"
+        elif z <= -1: color, text = "#2d6a4f", "Mild tailwind — bullish for gold"
+        else:         color, text = "#2c2c2c", "Neutral zone"
+    
+    st.markdown(
+        f'<div style="background-color:{color}; padding:12px; border-radius:8px; color:white;">{text}</div>',
+        unsafe_allow_html=True
+    )
+
+
+
+
 
 # ── Calculate ─────────────────────────────────────────────────────────────
 tips, infl, dxy = load_data()  # add this line
@@ -52,19 +60,19 @@ with col1:
     st.subheader("Real Yield (10Y TIPS)")
     st.metric("Current Yield", f"{tips.iloc[-1]:.2f}%")
     st.metric("Z-Score", f"{tips_z:.2f}")
-    st.info(signal_label(tips_z, bullish_high=False))
+    signal_box(tips_z, bullish_high=False)
 
 with col2:
     st.subheader("Inflation Expectations (5Y Breakeven)")
     st.metric("Current Rate", f"{infl.iloc[-1]:.2f}%")
     st.metric("Z-Score", f"{infl_z:.2f}")
-    st.info(signal_label(infl_z, bullish_high=True))
+    signal_box(infl_z, bullish_high=True)
 
 with col3:
     st.subheader("USD Index (DXY)")
     st.metric("Current Level", f"{dxy.iloc[-1]:.2f}")
     st.metric("Z-Score", f"{dxy_z:.2f}")
-    st.info(signal_label(dxy_z, bullish_high=False))
+    signal_box(dxy_z,  bullish_high=False)
 
 st.divider()
 st.caption("Z-scores calculated vs 2003–present history · Data: FRED, Yahoo Finance")
