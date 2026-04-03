@@ -65,7 +65,7 @@ def fetch_news(date_str):
     from_date = (date - pd.Timedelta(days=3)).strftime('%Y-%m-%d')
     to_date   = (date + pd.Timedelta(days=3)).strftime('%Y-%m-%d')
     url = (f"https://newsapi.org/v2/everything?"
-           f"q=gold+price&"
+           f"q=trump&"
            f"from={from_date}&to={to_date}&"
            f"sortBy=relevancy&"
            f"pageSize=3&"
