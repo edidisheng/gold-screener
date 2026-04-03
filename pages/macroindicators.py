@@ -38,6 +38,7 @@ def signal_label(z, bullish_high):
         else:        return "Neutral zone ⚪"
 
 # ── Calculate ─────────────────────────────────────────────────────────────
+tips, infl, dxy = load_data()  # add this line
 tips_z = zscore(tips).iloc[-1]
 infl_z = zscore(infl).iloc[-1]
 dxy_z = zscore(dxy).iloc[-1]
