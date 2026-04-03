@@ -24,20 +24,27 @@ def zscore(series):
 
 def signal_box(z, bullish_high):
     if bullish_high:
-        if z >= 2:    color, text = "#1a472a", "Strong tailwind — very bullish for gold"
-        elif z >= 1:  color, text = "#2d6a4f", "Mild tailwind — bullish for gold"
-        elif z <= -2: color, text = "#7b1d1d", "Strong headwind — very bearish for gold"
-        elif z <= -1: color, text = "#9b2226", "Mild headwind — bearish for gold"
-        else:         color, text = "#2c2c2c", "Neutral zone"
+        if z >= 2:    color, border, text = "#d4edda", "#28a745", "Strong tailwind — very bullish for gold"
+        elif z >= 1:  color, border, text = "#e8f5e9", "#66bb6a", "Mild tailwind — bullish for gold"
+        elif z <= -2: color, border, text = "#fde8e8", "#e53935", "Strong headwind — very bearish for gold"
+        elif z <= -1: color, border, text = "#fff3e0", "#ffa726", "Mild headwind — bearish for gold"
+        else:         color, border, text = "#f5f5f5", "#bdbdbd", "Neutral zone"
     else:
-        if z >= 2:    color, text = "#7b1d1d", "Strong headwind — very bearish for gold"
-        elif z >= 1:  color, text = "#9b2226", "Mild headwind — bearish for gold"
-        elif z <= -2: color, text = "#1a472a", "Strong tailwind — very bullish for gold"
-        elif z <= -1: color, text = "#2d6a4f", "Mild tailwind — bullish for gold"
-        else:         color, text = "#2c2c2c", "Neutral zone"
-    
+        if z >= 2:    color, border, text = "#fde8e8", "#e53935", "Strong headwind — very bearish for gold"
+        elif z >= 1:  color, border, text = "#fff3e0", "#ffa726", "Mild headwind — bearish for gold"
+        elif z <= -2: color, border, text = "#d4edda", "#28a745", "Strong tailwind — very bullish for gold"
+        elif z <= -1: color, border, text = "#e8f5e9", "#66bb6a", "Mild tailwind — bullish for gold"
+        else:         color, border, text = "#f5f5f5", "#bdbdbd", "Neutral zone"
+
     st.markdown(
-        f'<div style="background-color:{color}; padding:12px; border-radius:8px; color:white;">{text}</div>',
+        f'''<div style="
+            background-color:{color};
+            padding:14px 16px;
+            border-radius:8px;
+            color:#1a1a1a;
+            font-size:14px;
+            border-left: 4px solid {border};
+        ">{text}</div>''',
         unsafe_allow_html=True
     )
 
