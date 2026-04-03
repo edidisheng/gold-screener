@@ -38,22 +38,22 @@ df['net_position'] = df['long'] - df['short']
 df = df.sort_values('date').reset_index(drop=True)
 df['zscore'] = (df['net_position'] - df['net_position'].mean()) / df['net_position'].std()
 
-# ── Current values ────────────────────────────────────────────────────────
 net  = df['net_position'].iloc[-1]
 z    = df['zscore'].iloc[-1]
 date = df['date'].iloc[-1].strftime('%d %b %Y')
 
 # ── Signal ────────────────────────────────────────────────────────────────
+z = df['zscore'].iloc[-1]
 if z > 2:
-    signal = "Crowded long — contrarian bearish, caution 🔴"
+    color, border, signal = "#fde8e8", "#e53935", "Crowded long — contrarian bearish, caution"
 elif z > 1:
-    signal = "Elevated long — mild caution 🟠"
+    color, border, signal = "#fff3e0", "#ffa726", "Elevated long — mild caution"
 elif z < -2:
-    signal = "Crowded short — contrarian bullish, strong entry signal 🟢"
+    color, border, signal = "#d4edda", "#28a745", "Crowded short — contrarian bullish, strong entry signal"
 elif z < -1:
-    signal = "Elevated short — mild bullish signal 🟡"
+    color, border, signal = "#e8f5e9", "#66bb6a", "Elevated short — mild bullish signal"
 else:
-    signal = "Neutral positioning ⚪"
+    color, border, signal = "#f5f5f5", "#bdbdbd", "Neutral positioning"
 
 # ── Display ───────────────────────────────────────────────────────────────
 st.divider()
@@ -65,7 +65,17 @@ col3.metric("Z-Score", f"{z:.2f}")
 
 st.divider()
 st.subheader("Signal")
-st.info(signal)
+st.markdown(
+    f'''<div style="
+        background-color:{color};
+        padding:14px 16px;
+        border-radius:8px;
+        color:#1a1a1a;
+        font-size:14px;
+        border-left: 4px solid {border};
+    ">{signal}</div>''',
+    unsafe_allow_html=True
+)
 
 st.divider()
 st.subheader("How to interpret")
