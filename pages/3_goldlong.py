@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import requests
 from utils import load_gold, fit_trend
 
 st.set_page_config(layout="wide", page_title="Gold Trend Model 1 Year")
@@ -53,6 +54,36 @@ fig.update_yaxes(title_text="Deviation (AUD)", row=2, col=1)
 
 st.plotly_chart(fig, use_container_width=True)
 
+# ── Biggest deviation weeks + news ────────────────────────────────────────
 st.subheader("Biggest Deviation Weeks")
 key_dates = df['deviation'].abs().resample('W').max().sort_values(ascending=False).head(5)
-st.dataframe(key_dates.rename("Deviation (AUD)").reset_index(), use_container_width=True)
+
+@st.cache_data(ttl=3600)
+def fetch_news(date_str):
+    key = st.secrets["NEWS_API_KEY"]
+    date = pd.to_datetime(date_str)
+    from_date = (date - pd.Timedelta(days=3)).strftime('%Y-%m-%d')
+    to_date   = (date + pd.Timedelta(days=3)).strftime('%Y-%m-%d')
+    url = (f"https://newsapi.org/v2/everything?"
+           f"q=gold+price&"
+           f"from={from_date}&to={to_date}&"
+           f"sortBy=relevancy&"
+           f"pageSize=3&"
+           f"apiKey={key}")
+    r = requests.get(url)
+    if r.status_code == 200:
+        return r.json().get('articles', [])
+    return []
+
+for date, deviation in key_dates.items():
+    date_str = pd.to_datetime(date).strftime('%d %b %Y')
+    with st.expander(f"Week of {date_str} — Deviation: A${deviation:,.2f}"):
+        articles = fetch_news(date)
+        if articles:
+            for a in articles:
+                st.markdown(f"**[{a['title']}]({a['url']})**")
+                st.caption(f"{a['source']['name']} · {a['publishedAt'][:10]}")
+                st.write(a.get('description', ''))
+                st.divider()
+        else:
+            st.write("No news found for this period.")
