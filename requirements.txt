@@ -4,3 +4,4 @@ yfinance
 statsmodels
 plotly
 fredapi
+requests
