@@ -22,7 +22,7 @@ dcf_data = [
         "dcf_value":             11.7,
         "discount_rate":         0.09,
         "gold_price_assumption": 6000,
-        "notes":                 "Simple DCF on Westgold using 3 year management production projection assuming 6000 base gold price"
+        "notes":                 "Used 3 Year management projections"
     },
     # add more companies below in the same format
 ]
