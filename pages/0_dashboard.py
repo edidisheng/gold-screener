@@ -24,11 +24,13 @@ st.caption("All signals at a glance")
 
 # ── Load all data ─────────────────────────────────────────────────────────
 with st.spinner("Loading all indicators..."):
-    tips, infl, dxy     = load_macro()
-    df_long             = load_gold('2025-01-01')
-    df_short            = load_gold('2025-10-01')
-    cot_raw             = load_cot()
-
+    try:
+        tips, infl, dxy = load_macro()
+        df_long             = load_gold('2025-01-01')
+        df_short            = load_gold('2025-10-01')
+        cot_raw             = load_cot()
+    except Exception as e:
+        st.error(f"Failed to load macro data: {e}. Please refresh in a moment.")
 # ── Macro calculations ────────────────────────────────────────────────────
 tips_z = zscore(tips).iloc[-1]
 infl_z = zscore(infl).iloc[-1]

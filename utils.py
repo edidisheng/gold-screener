@@ -49,9 +49,12 @@ def load_macro():
     fred  = Fred(api_key=st.secrets["FRED_API_KEY"])
     tips  = fred.get_series('DFII10', observation_start='2003-01-01')
     infl  = fred.get_series('T5YIE',  observation_start='2003-01-01')
-    dxy   = yf.download('DX-Y.NYB', start='2003-01-01', auto_adjust=True)['Close'].squeeze()
+    dxy   = yf.download('DX-Y.NYB', start='2003-01-01', auto_adjust=True, progress=False)['Close'].squeeze()
     dxy.index = pd.to_datetime(dxy.index).normalize()
-    return tips, infl, dxy.dropna()
+    dxy = dxy.dropna()
+    if len(dxy) == 0:
+        raise ValueError("DXY data empty — yfinance rate limited, try again shortly")
+    return tips, infl, dxy
 
 
 @st.cache_data(ttl=3600)

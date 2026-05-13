@@ -5,7 +5,11 @@ st.set_page_config(layout="wide", page_title="Macro Indicators")
 st.title("Macro Indicators")
 st.caption("Real yield, inflation expectations, and USD strength vs gold")
 
-tips, infl, dxy = load_macro()
+try:
+    tips, infl, dxy = load_macro()
+except Exception as e:
+    st.error(f"Failed to load macro data: {e}. Please refresh in a moment.")
+    st.stop()
 
 tips_z = zscore(tips).iloc[-1]
 infl_z = zscore(infl).iloc[-1]
